@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minute_player/screens/home_screen.dart';
+import 'package:minute_player/utils/color_schemes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,12 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(colorScheme: darkColorScheme),
       home: HomeScreen(),
-      
     );
   }
 }
