@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Brightness, Color, ColorScheme;
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,

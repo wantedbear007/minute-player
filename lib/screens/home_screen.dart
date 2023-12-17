@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:minute_player/utils/global_variables.dart';
+import 'package:minute_player/widgets/bottom_navigation.dart'
+    show BottomNavigation;
+import 'package:permission_handler/permission_handler.dart'
+    show Permission, PermissionActions, PermissionStatus, openAppSettings;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,46 +12,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _screenNumber = 0;
+  bool _permissionGranted = false;
+
+  // for permissions
+  Future<void> _requestPermission() async {
+    PermissionStatus status = await Permission.videos.status;
+
+    if (status == PermissionStatus.granted) {
+      setState(() {
+        _permissionGranted = true;
+      });
+    } else {
+      await Permission.videos.request();
+      openAppSettings();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _requestPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-      ),
-      child: Scaffold(
-        appBar: AppBar(title: Text("this is home screen")),
-        body: homeScreenPages[_screenNumber],
-        bottomNavigationBar: NavigationBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          shadowColor: Theme.of(context).colorScheme.shadow,
-          elevation: 3,
-          onDestinationSelected: (int index) {
-            setState(() {
-              _screenNumber = index;
-            });
-          },
-          selectedIndex: _screenNumber,
-          destinations: const <Widget>[
-            NavigationDestination(
-              icon: Icon(Icons.video_collection_outlined),
-              label: "Videos",
-              selectedIcon: Icon(Icons.ondemand_video_sharp),
-              tooltip: "Video files",
+    return _permissionGranted
+        ? const BottomNavigation()
+        : Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Requires Storage Permission ! Try again.",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  IconButton(
+                    onPressed: _requestPermission,
+                    icon: const Icon(
+                      Icons.refresh,
+                      size: 30,
+                    ),
+                  )
+                ],
+              ),
             ),
-            NavigationDestination(
-              icon: Icon(Icons.settings),
-              label: "Settings",
-              tooltip: "Settings",
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {},
-        ),
-      ),
-    );
+          );
   }
 }
