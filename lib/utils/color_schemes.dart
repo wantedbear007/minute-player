@@ -67,3 +67,4 @@ const darkColorScheme = ColorScheme(
   outlineVariant: Color(0xFF49454F),
   scrim: Color(0xFF000000),
 );
+
