@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class FolderCard extends StatefulWidget {
   final String folderName;
-  final int fileCount;
+  final dynamic fileCount;
+  final String path;
 
   const FolderCard(
-      {super.key, required this.folderName, required this.fileCount});
+      {super.key, required this.folderName, required this.fileCount, required this.path});
 
   @override
   State<FolderCard> createState() => _FolderCardState();
@@ -14,12 +15,17 @@ class FolderCard extends StatefulWidget {
 class _FolderCardState extends State<FolderCard> {
   @override
   Widget build(BuildContext context) {
+
+    print("path is ${widget.path}");
+    print("-------------------------------");
     return InkWell(
       onTap: () {
         print("hello");
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+        ),
         child: Row(
           children: [
             Icon(
@@ -33,7 +39,7 @@ class _FolderCardState extends State<FolderCard> {
                 children: [
                   Text(
                     widget.folderName,
-                    style: TextStyle(overflow: TextOverflow.ellipsis),
+                    style: const TextStyle(overflow: TextOverflow.ellipsis),
                     maxLines: 2,
                   ),
                   Text(

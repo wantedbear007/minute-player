@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -20,9 +21,9 @@ class FileManager {
     List<FileSystemEntity> files = [];
     Directory dir = Directory(path);
 
-    List<FileSystemEntity> lst = dir.listSync();
+    // List<FileSystemEntity> lst = dir.listSync();
 
-    for (FileSystemEntity file in lst) {
+    await for (FileSystemEntity file in dir.list()) {
       if (FileSystemEntity.isFileSync(file.path)) {
         files.add(file);
       } else {
@@ -41,13 +42,13 @@ class FileManager {
     List<FileSystemEntity> files = [];
 
     for (Directory dir in storages) {
-      List<FileSystemEntity> allFilesInPath = [];
+      // List<FileSystemEntity> allFilesInPath = [];
       try {
-        allFilesInPath = await getAllFilesInPath(dir.path);
+        files.addAll(await getAllFilesInPath(dir.path));
       } catch (err) {
         if (kDebugMode) print(err.toString());
       }
-      files.addAll(allFilesInPath);
+      // files.addAll(allFilesInPath);
     }
 
     return files;
@@ -67,62 +68,93 @@ class FileManager {
       // Add more video formats as needed
     ];
 
-    String fileExtension = filePath.substring(filePath.length - 4);
-
+    // String fileExtension = filePath.substring(filePath.length - 4);
+    String fileExtension = path.extension(filePath);
     return videoFormats.contains(fileExtension) ? true : false;
   }
 
 //   get folders with video files
   static Map<String, String> getFolders(String filePath) {
-    int firstDirectory = 0;
-    int secondDirectory = 0;
+    // int firstDirectory = 0;
+    // int secondDirectory = 0;
+    //
+    // for (int i = filePath.length - 1; i >= 0; i--) {
+    //   if (filePath[i] == '/' && firstDirectory == 0) {
+    //     firstDirectory = i;
+    //     continue;
+    //   }
+    //   if (firstDirectory != 0 && filePath[i] == '/') {
+    //     secondDirectory = i;
+    //     break;
+    //   }
 
-    for (int i = filePath.length - 1; i >= 0; i--) {
-      if (filePath[i] == '/' && firstDirectory == 0) {
-        firstDirectory = i;
-        continue;
-      }
-      if (firstDirectory != 0 && filePath[i] == '/') {
-        secondDirectory = i;
-        break;
-      }
-    }
+    String folderName = path.basename(path.dirname(filePath));
+    String folderPath = path.dirname(filePath);
 
-    Map<String, String> res = {};
-    String folderName = filePath.substring(secondDirectory + 1, firstDirectory);
-    String folderPath = filePath.substring(0, secondDirectory + 1);
-
-    res["name"] = folderName;
-    res["path"] = folderPath;
-
-    // return filePath.substring(secondDirectory + 1, firstDirectory);
-
-    return res;
+    return {"name": folderName, "path": folderPath};
   }
 
+  // Map<String, String> res = {};
+  // String folderName = filePath.substring(secondDirectory + 1, firstDirectory);
+  // String folderPath = filePath.substring(0, secondDirectory + 1);
+  //
+  // res["name"] = folderName;
+  // res["path"] = folderPath;
+  //
+  // // return filePath.substring(secondDirectory + 1, firstDirectory);
+  //
+  // return res;
+  // }
+
 // get all video files
-  static Future<Map<String, int>> getFoldersWithFiles() async {
+  static Future<List<Map<String, dynamic>>> getFoldersWithFiles() async {
     List<String> allVideos = <String>[];
     List<FileSystemEntity> folders = await getFiles();
 
     for (FileSystemEntity files in folders) {
       if (isVideo(files.path)) {
         allVideos.add(files.path);
-        continue;
       }
     }
 
+    List<Map<String, dynamic>> folderWithQuantity = [];
 
-    // for ()
-    Map<String, int> folderWithQuantity = {};
-
-
+    // Map<String, dynamic> folderWithQuantity = {};
     for (int i = 0; i < allVideos.length; i++) {
-      String folderName = getFolders(allVideos[i])["name"]!;
+      Map<String, String> folderInfo = getFolders(allVideos[i]);
+      String folderName = folderInfo["name"]!;
+      String folderPath = folderInfo["path"]!;
 
-      folderWithQuantity[folderName] =
-          (folderWithQuantity[folderName] ?? 0) + 1;
+      bool folderExists = false;
+      for (int j = 0; j < folderWithQuantity.length; j++) {
+        if (folderWithQuantity[j]["folderName"] == folderName &&
+            folderWithQuantity[j]["folderPath"] == folderPath) {
+          folderExists = true;
+          folderWithQuantity[j]["fileCount"] =
+              (folderWithQuantity[j]["fileCount"] ?? 0) + 1;
+          break;
+        }
+      }
+
+      if (!folderExists) {
+        folderWithQuantity.add({
+          "folderName": folderName,
+          "folderPath": folderPath,
+          "fileCount": 1,
+        });
+      }
     }
+
+    // for (int i = 0; i < allVideos.length; i++) {
+    //   // String folderName = getFolders(allVideos[i])["name"]!;
+    //   Map<String, String> folderInfo = getFolders(allVideos[i]);
+    //
+    //   String folderName = folderInfo["name"]!;
+    //   String folderPath = folderInfo["path"]!;
+    //   folderWithQuantity[folderName] =
+    //       ((folderWithQuantity[folderName] ?? 0) + 1);
+    //   folderWithQuantity["path"] = folderPath;
+    // }
 
     return folderWithQuantity;
   }

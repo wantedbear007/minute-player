@@ -15,13 +15,22 @@ class FolderScreen extends StatefulWidget {
 
 class _FolderScreenState extends State<FolderScreen> {
   bool _loading = true;
-  late Map<String, int> folders;
+  late List<Map<String, dynamic>> folders;
 
   void _loadFolders() async {
     // setState(() {
     //   _loading = true;
     // });
     folders = await FileManager.getFoldersWithFiles();
+
+    // print(folders.toString());
+
+    for (var x in folders) {
+      print(x.toString());
+      print("--------------------------------------");
+
+    }
+
     setState(() {
       _loading = false;
     });
@@ -36,22 +45,26 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // return Text('hello');
     return Scaffold(
-        appBar: AppBar(
-          title: Text("loading "),
-        ),
-        body: _loading
-            ? Center(
-                child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.primary),
-              )
-            : ListView.builder(
-                itemCount: folders.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String folderName = folders.keys.elementAt(index);
-                  return FolderCard(
-                      folderName: folderName,
-                      fileCount: folders[folderName] ?? 0);
-                }));
+      body: _loading
+          ? Center(
+              child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary),
+            )
+          : ListView.builder(
+              itemCount: folders.length,
+              itemBuilder: (BuildContext context, int index) {
+                // String folderName = folders.keys.elementAt(index);
+                String folderName = folders[index]['folderName'] ?? "bhaijaan";
+
+                return FolderCard(
+                  path: folders[index]["folderPath"] ?? "bhaijaan address",
+                  folderName: folderName,
+                  fileCount: folders[index]["fileCount"] ?? "bhaijaan number",
+                );
+              },
+            ),
+    );
   }
 }
