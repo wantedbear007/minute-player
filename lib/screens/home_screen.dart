@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minute_player/widgets/bottom_navigation.dart'
-    show BottomNavigation;
+    show BottomNavigation, NavigationBars;
 import 'package:permission_handler/permission_handler.dart'
     show Permission, PermissionActions, PermissionStatus, openAppSettings;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.navigationShell});
+  final StatefulNavigationShell navigationShell;
+
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -37,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return _permissionGranted
-        ? const BottomNavigation()
+        ?  NavigationBars(navigationShell: widget.navigationShell)
         : Scaffold(
             body: Center(
               child: Column(
@@ -60,3 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
           );
   }
 }
+
+
+// class AppEntryPoint extends StatefulWidget {
+//   const AppEntryPoint({super.key});
+//
+//   @override
+//   State<AppEntryPoint> createState() => _AppEntryPointState();
+// }
+//
+// class _AppEntryPointState extends State<AppEntryPoint> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp
+//   }
+// }
