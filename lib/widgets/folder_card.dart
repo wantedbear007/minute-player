@@ -4,13 +4,13 @@ import 'package:minute_player/screens/video_files_screen.dart';
 class FolderCard extends StatefulWidget {
   final String folderName;
   final dynamic fileCount;
-  final String path;
+  final List<String> files;
 
   const FolderCard(
       {super.key,
       required this.folderName,
       required this.fileCount,
-      required this.path});
+      required this.files});
 
   @override
   State<FolderCard> createState() => _FolderCardState();
@@ -24,7 +24,9 @@ class _FolderCardState extends State<FolderCard> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => VideoScreen(
-                folderName: widget.folderName, folderPath: widget.path),
+              folderName: widget.folderName,
+              folderFiles: widget.files,
+            ),
           ),
         );
       },

@@ -18,8 +18,16 @@ class BottomNavBar extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         destinations: const [
-          NavigationDestination(label: 'Section A', icon: Icon(Icons.home)),
-          NavigationDestination(label: 'Section B', icon: Icon(Icons.settings)),
+          NavigationDestination(
+            label: 'Home',
+            icon: Icon(
+              Icons.home,
+            ),
+          ),
+          NavigationDestination(
+            label: 'Settings',
+            icon: Icon(Icons.settings),
+          ),
         ],
         onDestinationSelected: onDestinationSelected,
       ),

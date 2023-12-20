@@ -4,13 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:minute_player/utils/bottom_nav_bar.dart';
 import 'package:minute_player/utils/bottom_nav_rail.dart';
 
-import '../utils/global_variables.dart';
-
-
 
 class NavigationBars extends StatelessWidget {
-  const NavigationBars({Key? key, required this.navigationShell}):super(
-  key: key ?? const ValueKey<String>('minutePlayerNav'));
+  const NavigationBars({Key? key, required this.navigationShell})
+      : super(key: key ?? const ValueKey<String>('minutePlayerNav'));
   final StatefulNavigationShell navigationShell;
 
   void _goBranch(int index) {
@@ -20,29 +17,29 @@ class NavigationBars extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth < 450) {
-        return BottomNavBar(
-          body: navigationShell,
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: _goBranch,
-        );
-      } else {
-        return SideNavRail(
-          body: navigationShell,
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: _goBranch,
-        );
-      }
-    });
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).colorScheme.surface),
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < 450) {
+          return BottomNavBar(
+            body: navigationShell,
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          );
+        } else {
+          return SideNavRail(
+            body: navigationShell,
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          );
+        }
+      }),
+    );
   }
 }
-
-
-
 
 //
 // class BottomNavigation extends StatefulWidget {

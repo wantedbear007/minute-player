@@ -229,7 +229,7 @@ class FileManager {
   }
 
   // function Optimus Prime
-  static Future<List<Map<String, dynamic>>> getFolderWithFiles() async {
+  static Future<List<Map<String, dynamic>>> getAllFoldersWithFiles() async {
     List<FileSystemEntity> files = await tempGetFiles();
     List<String> videoFiles = [];
     for (FileSystemEntity file in files) {
