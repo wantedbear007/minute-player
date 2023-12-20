@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minute_player/screens/folders_screen.dart';
 import 'package:minute_player/screens/home_screen.dart';
 import 'package:minute_player/screens/settings_screen.dart';
-import 'package:path/path.dart';
 
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -28,7 +27,9 @@ final router = GoRouter(
                   pageBuilder: (context, state) => const NoTransitionPage(
                         child: FolderScreen(),
                       ),
-                  routes: [] //subRoutes here
+                  routes: const [
+
+                  ] //subRoutes here
                   )
             ],
           ),
@@ -40,7 +41,7 @@ final router = GoRouter(
                   pageBuilder: (context, state) => const NoTransitionPage(
                         child: SettingsScreen(),
                       ),
-                  routes: [] //subRoutes here
+                  routes: const [] //subRoutes here
                   )
             ],
           )
