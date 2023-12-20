@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minute_player/screens/video_files_screen.dart';
 
 class FolderCard extends StatefulWidget {
   final String folderName;
@@ -6,7 +7,10 @@ class FolderCard extends StatefulWidget {
   final String path;
 
   const FolderCard(
-      {super.key, required this.folderName, required this.fileCount, required this.path});
+      {super.key,
+      required this.folderName,
+      required this.fileCount,
+      required this.path});
 
   @override
   State<FolderCard> createState() => _FolderCardState();
@@ -15,12 +19,14 @@ class FolderCard extends StatefulWidget {
 class _FolderCardState extends State<FolderCard> {
   @override
   Widget build(BuildContext context) {
-
-    print("path is ${widget.path}");
-    print("-------------------------------");
     return InkWell(
       onTap: () {
-        print("hello");
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VideoScreen(
+                folderName: widget.folderName, folderPath: widget.path),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(
