@@ -6,11 +6,15 @@ class FolderCard extends StatefulWidget {
   final dynamic fileCount;
   final List<String> files;
 
-  const FolderCard(
-      {super.key,
-      required this.folderName,
-      required this.fileCount,
-      required this.files});
+  // final Map<String, dynamic> relatedFiles;
+
+  const FolderCard({
+    super.key,
+    required this.folderName,
+    required this.fileCount,
+    required this.files,
+    // required this.relatedFiles
+  });
 
   @override
   State<FolderCard> createState() => _FolderCardState();
@@ -26,6 +30,7 @@ class _FolderCardState extends State<FolderCard> {
             builder: (context) => VideoScreen(
               folderName: widget.folderName,
               folderFiles: widget.files,
+              allFiles: [],
             ),
           ),
         );
