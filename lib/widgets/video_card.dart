@@ -10,9 +10,10 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 class VideoCard extends StatefulWidget {
   final String name;
-  final FileSystemEntity file;
 
-  const VideoCard({super.key, required this.name, required this.file});
+  // final FileSystemEntity file;
+
+  const VideoCard({super.key, required this.name});
 
   @override
   State<VideoCard> createState() => _VideoCardState();
@@ -22,60 +23,57 @@ class _VideoCardState extends State<VideoCard> {
   bool _loading = true;
   late String videoSize = "NA";
   late var thumbnail;
-  late String? thumbnailPath;
+  late String thumbnailPath =
+      "https://images.unsplash.com/photo-1695653422872-9bd1e29fe490?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
   late String? fileName;
 
-  _getData() async {
-    File file = File(widget.file.path);
-    int fileSize = await file.length();
-
-    // var x = await file.stat();
-    videoSize = FileManager.formatBytes(fileSize, 2);
-    String tempPath = widget.file.path;
-    // /storage/emulated/0/Movies/Whatsapp/VID-20231022-WA0000.mp4
-    // print(widget.file.path);
-    thumbnailPath = await FileManager.getThumbnail(tempPath);
-    // setState(() {
-    //   _loading = false;
-    // });
-
-    return thumbnailPath;
-  }
+  //
+  // _getData() async {
+  //   File file = File(widget.file.path);
+  //   int fileSize = await file.length();
+  //
+  //   // var x = await file.stat();
+  //   videoSize = FileManager.formatBytes(fileSize, 2);
+  //   String tempPath = widget.file.path;
+  //   // /storage/emulated/0/Movies/Whatsapp/VID-20231022-WA0000.mp4
+  //   // print(widget.file.path);
+  //   thumbnailPath = await FileManager.getThumbnail(tempPath);
+  //   // setState(() {
+  //   //   _loading = false;
+  //   // });
+  //
+  //   return thumbnailPath;
+  // }
 
   @override
   void initState() {
     super.initState();
-    _getData();
+    // _getData();
   }
 
   @override
   Widget build(BuildContext context) {
     final double thumbnailWidth = MediaQuery.of(context).size.width * 0.30;
 
-    return FutureBuilder(
-        future: _getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Card(thumbnailPath: snapshot.data.toString(),);
-            // return Image.file(
-            //   File(snapshot.data.toString()),
-            //   width: 100,
-            //   height: 100,
-            // );
-            // return Text(snapshot.data.toString());
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
+    return Card(
+      fileName: widget.name,
+      thumbnailPath: thumbnailPath,
+      thumbnailWidth: thumbnailWidth,
+    );
   }
-
-
 }
-
 
 class Card extends StatelessWidget {
   final String thumbnailPath;
-  const Card({super.key, required this.thumbnailPath});
+  final double thumbnailWidth;
+  final String fileName;
+
+  const Card({
+    super.key,
+    required this.fileName,
+    required this.thumbnailPath,
+    required this.thumbnailWidth,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +93,13 @@ class Card extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     // child: Image.memory(thumbnail),
-                    child: Image.file(
-                      File(thumbnailPath),
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.fill,
-                    ),
+                    child: Image.network(thumbnailPath, width: thumbnailWidth),
+                    // child: Image.file(
+                    //   File(thumbnailPath),
+                    //   width: 100,
+                    //   height: 100,
+                    //   fit: BoxFit.fill,
+                    // ),
                   ),
                 ),
                 const Positioned(
@@ -115,9 +114,10 @@ class Card extends StatelessWidget {
             ),
             Flexible(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    basename("helllo"),
+                    basename(fileName),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -127,9 +127,9 @@ class Card extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "2:38:50 • 1080P • noobn",
-                        style: TextStyle(
-                            color: Theme.of(context).disabledColor),
+                        "2:38:50 • 1080P • 324MB",
+                        style:
+                            TextStyle(color: Theme.of(context).disabledColor),
                       ),
                     ],
                   )
@@ -146,6 +146,7 @@ class Card extends StatelessWidget {
           ],
         ),
       ),
-    );;
+    );
+    ;
   }
 }

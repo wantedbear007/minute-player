@@ -23,6 +23,7 @@ final router = GoRouter(
             navigatorKey: _shellNavigatorAKey,
             routes: [
               GoRoute(
+
                   path: '/folders',
                   pageBuilder: (context, state) => const NoTransitionPage(
                         child: FolderScreen(),
