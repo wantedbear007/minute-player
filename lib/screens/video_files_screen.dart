@@ -4,11 +4,13 @@ import 'package:minute_player/widgets/video_card.dart';
 class VideoScreen extends StatelessWidget {
   final String folderName;
   final List<String> folderFiles;
+  final List<String> allFiles;
 
   const VideoScreen({
     super.key,
     required this.folderName,
     required this.folderFiles,
+    required this.allFiles,
   });
 
   @override
@@ -25,6 +27,7 @@ class VideoScreen extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return VideoCard(
             name: folderFiles[index],
+            nextFiles: folderFiles,
           );
         },
       ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:flutter_video_info/flutter_video_info.dart';
+import 'package:minute_player/screens/player_screen.dart';
 import 'package:minute_player/utils/dialog.dart';
 import 'package:minute_player/utils/file_manager.dart';
 import 'package:path/path.dart';
@@ -10,10 +11,11 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 class VideoCard extends StatefulWidget {
   final String name;
+  final List<String> nextFiles;
 
   // final FileSystemEntity file;
 
-  const VideoCard({super.key, required this.name});
+  const VideoCard({super.key, required this.name, required this.nextFiles});
 
   @override
   State<VideoCard> createState() => _VideoCardState();
@@ -45,11 +47,7 @@ class _VideoCardState extends State<VideoCard> {
   //   return thumbnailPath;
   // }
 
-  @override
-  void initState() {
-    super.initState();
-    // _getData();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +57,7 @@ class _VideoCardState extends State<VideoCard> {
       fileName: widget.name,
       thumbnailPath: thumbnailPath,
       thumbnailWidth: thumbnailWidth,
+      nextFiles: widget.nextFiles,
     );
   }
 }
@@ -67,19 +66,26 @@ class Card extends StatelessWidget {
   final String thumbnailPath;
   final double thumbnailWidth;
   final String fileName;
+  final List<String> nextFiles;
 
   const Card({
     super.key,
     required this.fileName,
     required this.thumbnailPath,
     required this.thumbnailWidth,
+    required this.nextFiles,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("helloo");
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                PlayerScreen(fileName: fileName, thumbnail: thumbnailPath, nextFiles: nextFiles),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.only(top: 6, bottom: 6, left: 10),
