@@ -8,7 +8,8 @@ import 'package:sqflite/sqflite.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
-  FileManager.megaFunction();
+  // var x = await FileManager.getFolderWithFiles();
+
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       //           size: 70,
       //         ),
       //         onPressed: () {
-      //           FileManager.megaFunction();
+      //           FileManager.getFolderWithFiles();
       //         }),
       //   ),
       // ),

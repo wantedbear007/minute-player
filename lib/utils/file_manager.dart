@@ -228,65 +228,40 @@ class FileManager {
     return files;
   }
 
-  // function in construction
-  static void megaFunction() async {
-    print("fuction called !");
-    // List<Directory> storagePaths = await getStoragePaths();
-    // List<FileSystemEntity> allFilesInPath = [];
-    //
-    // for (Directory dir in storagePaths) {
-    //   var x = await getAllFilesInPath(dir.path);
-    //   print(x);
-    //   // print(dir.path);
-    //   print("----------------");
-    // }
-
+  // function Optimus Prime
+  static Future<List<Map<String, dynamic>>> getFolderWithFiles() async {
     List<FileSystemEntity> files = await tempGetFiles();
-    List<FileSystemEntity> videoFiles = [];
+    List<String> videoFiles = [];
     for (FileSystemEntity file in files) {
       if (isVideo(file.path.toString())) {
-        videoFiles.add(file);
+        videoFiles.add(file.path.toString());
       }
     }
 
-    List<String> fileNames = [];
-    List<Map<String, dynamic>> fileData = [];
+    List<Map<String, dynamic>> json = [];
 
+    for (var file in videoFiles) {
+      Map<String, dynamic> folderBundle = {};
+      List<String> pathSegments = file.toString().split('/');
+      String folderName = pathSegments[pathSegments.length - 2];
+      bool isAvailable = false;
 
-    // for (FileSystemEntity video in videoFiles) {
-    //   String title = path.basename(video.path);
-    //   String dir = path.dirname(video.path);
-    //   String folderName = path.basename(dir);
-    //   fileNames.add(folderName);
-    //   // fileNames.add(title);
-    //
-    //   Map<String, dynamic> temp = {};
-    //   temp["folderName"] = folderName;
-    //   temp["fileName"] = title;
-    //   temp["path"] = video.path;
-    //   temp["count"] = (temp["count"] ?? 0) + 1;
-    //
-    //
-    //   // Todo create an list of file name and file thumbnail
-    //   List<String> subFiles = [];
-    //
-    //
-    //
-    //   fileData.add(temp);
-    // }
-    //
-    // for (var x in fileData) {
-    //   print(x.toString());
-    //   print('-------------------------');
-    // }
+      for (int i = 0; i < json.length; i++) {
+        if (json[i]["folderName"] == folderName) {
+          isAvailable = true;
+          json[i]["filesCount"] = (json[i]["filesCount"] ?? 0) + 1;
+          (json[i]["files"] as List<String>).add(file);
+          break;
+        }
+      }
 
-    for (var str in videoFiles) {
-      print(str.path.toString());
-      print("--------------------------------");
+      if (!isAvailable) {
+        folderBundle["folderName"] = folderName;
+        folderBundle["filesCount"] = 1;
+        folderBundle["files"] = [file];
+        json.add(folderBundle);
+      }
     }
-
-    // var x = await getAllFilesInPath(storagePaths[0].toString());
-
-    // print(allFilesInPath.toString());
+    return json;
   }
 }
