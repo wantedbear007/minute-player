@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 
 import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class FileManager {
 //   Get all storage paths
@@ -15,6 +18,58 @@ class FileManager {
 
     return filteredPaths;
   }
+
+  // convert bytes to MB GB
+  static String formatBytes(int bytes, int decimals) {
+    if (bytes == 0) return '0.0 Bytes';
+    int k = 1024;
+    int dm = decimals <= 0 ? 0 : decimals;
+    List<String> sizes = [
+      'Bytes',
+      'KB',
+      'MB',
+      'GB',
+      'TB',
+      'PB',
+      'EB',
+      'ZB',
+      'YB'
+    ];
+    int i = (log(bytes) / log(k)).floor();
+    return '${(bytes / pow(k, i)).toStringAsFixed(dm)} ${sizes[i]}';
+  }
+
+  static bool isVideo(String filePath) {
+    List<String> videoFormats = [
+      ".mp4",
+      ".avi",
+      ".mkv",
+      ".wmv",
+      ".mov",
+      ".flv",
+      ".mpeg",
+      ".3gp",
+      ".webm",
+      // Add more video formats as needed
+    ];
+
+    // String fileExtension = filePath.substring(filePath.length - 4);
+    String fileExtension = path.extension(filePath);
+    return videoFormats.contains(fileExtension) ? true : false;
+  }
+
+  // static Future<List<FileSystemEntity>> getAllFilesInPath(String path) async {
+  //   Directory dir = Directory(path);
+  //   List<FileSystemEntity> videoFiles = [];
+  //
+  //   await for (FileSystemEntity entity in dir.list()) {
+  //     if (entity is File && isVideo(entity.path)) {
+  //       videoFiles.add(entity);
+  //     }
+  //   }
+  //
+  //   return videoFiles;
+  // }
 
   // to get all files in path
   static Future<List<FileSystemEntity>> getAllFilesInPath(String path) async {
@@ -36,6 +91,21 @@ class FileManager {
     return files;
   }
 
+//   to get video files in a path / folder
+
+  static Future<List<FileSystemEntity>> getVideoFiles(String folderPath) async {
+    Directory directory = Directory(folderPath);
+
+    if (await directory.exists()) {
+      List<FileSystemEntity> videoFiles =
+          directory.listSync().where((file) => isVideo(file.path)).toList();
+
+      return videoFiles;
+    } else {
+      return [];
+    }
+  }
+
 // to get all files of device
   static Future<List<FileSystemEntity>> getFiles() async {
     List<Directory> storages = await getStoragePaths();
@@ -52,25 +122,6 @@ class FileManager {
     }
 
     return files;
-  }
-
-  static bool isVideo(String filePath) {
-    List<String> videoFormats = [
-      ".mp4",
-      ".avi",
-      ".mkv",
-      ".wmv",
-      ".mov",
-      ".flv",
-      ".mpeg",
-      ".3gp",
-      ".webm",
-      // Add more video formats as needed
-    ];
-
-    // String fileExtension = filePath.substring(filePath.length - 4);
-    String fileExtension = path.extension(filePath);
-    return videoFormats.contains(fileExtension) ? true : false;
   }
 
 //   get folders with video files
@@ -145,17 +196,72 @@ class FileManager {
       }
     }
 
-    // for (int i = 0; i < allVideos.length; i++) {
-    //   // String folderName = getFolders(allVideos[i])["name"]!;
-    //   Map<String, String> folderInfo = getFolders(allVideos[i]);
-    //
-    //   String folderName = folderInfo["name"]!;
-    //   String folderPath = folderInfo["path"]!;
-    //   folderWithQuantity[folderName] =
-    //       ((folderWithQuantity[folderName] ?? 0) + 1);
-    //   folderWithQuantity["path"] = folderPath;
-    // }
-
     return folderWithQuantity;
+  }
+
+//   get video thumbnail
+  static Future<String?> getThumbnail(String videoPath) async {
+    String? _thumbnail = await VideoThumbnail.thumbnailFile(
+        video: videoPath,
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        imageFormat: ImageFormat.JPEG);
+
+    return _thumbnail;
+  }
+
+  static Future<List<FileSystemEntity>> tempGetFiles() async {
+    List<Directory> storages = await getStoragePaths();
+    List<FileSystemEntity> files = [];
+
+    for (Directory dir in storages) {
+      // List<FileSystemEntity> allFilesInPath = [];
+      try {
+        // if (isVideo(dir.path)) {
+        files.addAll(await getAllFilesInPath(dir.path));
+        // }
+      } catch (err) {
+        if (kDebugMode) print(err.toString());
+      }
+      // files.addAll(allFilesInPath);
+    }
+
+    return files;
+  }
+
+  // function Optimus Prime
+  static Future<List<Map<String, dynamic>>> getFolderWithFiles() async {
+    List<FileSystemEntity> files = await tempGetFiles();
+    List<String> videoFiles = [];
+    for (FileSystemEntity file in files) {
+      if (isVideo(file.path.toString())) {
+        videoFiles.add(file.path.toString());
+      }
+    }
+
+    List<Map<String, dynamic>> json = [];
+
+    for (var file in videoFiles) {
+      Map<String, dynamic> folderBundle = {};
+      List<String> pathSegments = file.toString().split('/');
+      String folderName = pathSegments[pathSegments.length - 2];
+      bool isAvailable = false;
+
+      for (int i = 0; i < json.length; i++) {
+        if (json[i]["folderName"] == folderName) {
+          isAvailable = true;
+          json[i]["filesCount"] = (json[i]["filesCount"] ?? 0) + 1;
+          (json[i]["files"] as List<String>).add(file);
+          break;
+        }
+      }
+
+      if (!isAvailable) {
+        folderBundle["folderName"] = folderName;
+        folderBundle["filesCount"] = 1;
+        folderBundle["files"] = [file];
+        json.add(folderBundle);
+      }
+    }
+    return json;
   }
 }
