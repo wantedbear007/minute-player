@@ -22,6 +22,10 @@ class PlayerScreen extends StatelessWidget {
     List<String> updated = nextFiles.where((str) => str != fileName).toList();
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.screen_rotation),
+      ),
       body: SafeArea(
         child: Column(
           children: [
