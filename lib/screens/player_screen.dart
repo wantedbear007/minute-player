@@ -32,7 +32,7 @@ class PlayerScreen extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.25,
               // child: Text(basename(fileName)),
-              child: SvgPicture.asset("empty.svg", height: 50),
+              child: SvgPicture.asset("assets/images/empty.svg", height: 50),
             ),
             // const Divider(),
             Padding(
