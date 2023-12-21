@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
+import 'package:minute_player/utils/dialog.dart';
 import 'package:minute_player/widgets/video_card.dart';
 import 'package:path/path.dart';
 
-class PlayerScreen extends StatelessWidget {
+class PlayerScreen extends StatefulWidget {
   final String fileName;
   final String thumbnail;
   final List<String> nextFiles;
@@ -18,8 +20,33 @@ class PlayerScreen extends StatelessWidget {
   });
 
   @override
+  State<PlayerScreen> createState() => _PlayerScreenState();
+}
+
+class _PlayerScreenState extends State<PlayerScreen> {
+  final String _file =
+      "https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4";
+  late final player = Player();
+
+  late final controller = VideoController(player);
+
+  @override
+  void initState() {
+    super.initState();
+    player.open(Media(widget.fileName));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    player.dispose();
+  }
+
+  // /storage/emulated/0/Movies/Whatsapp/VID-20231022-WA0000.mp4
+  @override
   Widget build(BuildContext context) {
-    List<String> updated = nextFiles.where((str) => str != fileName).toList();
+    List<String> updated =
+        widget.nextFiles.where((str) => str != widget.fileName).toList();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -32,7 +59,9 @@ class PlayerScreen extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.25,
               // child: Text(basename(fileName)),
-              child: SvgPicture.asset("assets/images/empty.svg", height: 50),
+              child: Video(
+                controller: controller,
+              ),
             ),
             // const Divider(),
             Padding(
@@ -50,7 +79,7 @@ class PlayerScreen extends StatelessWidget {
                             icon: const Icon(Icons.arrow_back)),
                         Flexible(
                           child: Text(
-                            basename(fileName),
+                            basename(widget.fileName),
                             maxLines: 3,
                             style: const TextStyle(
                                 overflow: TextOverflow.ellipsis),
@@ -71,12 +100,15 @@ class PlayerScreen extends StatelessWidget {
             const Divider(),
             Flexible(
               child: updated.isEmpty
-                  ? Center(child: Text("notavailable"))
+                  ? Dialogs.showSvg(
+                      "assets/images/empty.svg",
+                      "There are no additional files.",
+                      MediaQuery.of(context).size.width * 0.25)
                   : ListView.builder(
                       itemCount: updated.length,
                       itemBuilder: (context, int index) {
                         return VideoCard(
-                            name: updated[index], nextFiles: nextFiles);
+                            name: updated[index], nextFiles: widget.nextFiles);
                       },
                     ),
             )
