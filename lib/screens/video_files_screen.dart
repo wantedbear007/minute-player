@@ -16,6 +16,8 @@ class VideoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {}, child: const Icon(Icons.play_arrow)),
       appBar: AppBar(
         title: Text(
           folderName,

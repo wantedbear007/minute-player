@@ -42,6 +42,9 @@ dependencies:
   video_thumbnail: ^0.5.3
   sqflite: ^2.3.0
   flutter_svg: ^2.0.9
+  media_kit: ^1.1.10+1
+  media_kit_video: ^1.2.4
+  media_kit_libs_video: ^1.0.4
 
 dev_dependencies:
   flutter_test:
