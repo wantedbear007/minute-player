@@ -1,4 +1,7 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:minute_player/utils/file_manager.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar(
@@ -14,6 +17,14 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        print("yayya");
+       // FileManager.getAllStorageList().then((value) => print(value));
+
+       //FileManager.getStoragePaths().then((value) => print(value));
+      // FileManager.tempGetFiles().then((value) => print(value.toString() + '\n'));
+       FileManager.getAllFilesInPath("/storage/emulated/0/").then((value) => print(value));
+      },),
       body: body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,

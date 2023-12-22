@@ -75,6 +75,7 @@ class FileManager {
   static Future<List<FileSystemEntity>> getAllFilesInPath(String path) async {
     List<FileSystemEntity> files = [];
     Directory dir = Directory(path);
+   // print(dir);
 
     // List<FileSystemEntity> lst = dir.listSync();
 
@@ -264,4 +265,29 @@ class FileManager {
     }
     return json;
   }
+
+
+
+
+
+
+
+
+  //BY SPS
+  //  static Future<List<Directory>> getAllStorageList() async {
+  //   if(Platform.isAndroid){
+  //     List<Directory> storages = (await getExternalStorageDirectories())!;
+  //     storages = storages.map((Directory e) {
+  //       final List<String> splittedPath = e.path.split("/");
+  //       return Directory(splittedPath
+  //           .sublist(
+  //           0, splittedPath.indexWhere((element) => element == "Android"))
+  //           .join("/"));
+  //     }).toList();
+  //
+  //     return storages;
+  //
+  //   }
+  //   return [];
+  //  }
 }
