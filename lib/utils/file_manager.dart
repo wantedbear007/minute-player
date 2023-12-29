@@ -349,4 +349,9 @@ class FileManager {
 //
 //   return thumbnailPath;
 // }
+
+
+// favourites
+
+
 }
