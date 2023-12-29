@@ -25,6 +25,10 @@ class BottomNavBar extends StatelessWidget {
             ),
           ),
           NavigationDestination(
+            icon: Icon(Icons.favorite),
+            label: "Favourites",
+          ),
+          NavigationDestination(
             label: 'Settings',
             icon: Icon(Icons.settings),
           ),

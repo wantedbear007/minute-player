@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SideNavRail extends StatelessWidget {
-  const SideNavRail({super.key, required this.body, required this.selectedIndex, required this.onDestinationSelected});
+  const SideNavRail(
+      {super.key,
+      required this.body,
+      required this.selectedIndex,
+      required this.onDestinationSelected});
+
   final Widget body;
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;

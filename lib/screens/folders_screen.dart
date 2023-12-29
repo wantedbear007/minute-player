@@ -23,6 +23,10 @@ class _FolderScreenState extends State<FolderScreen> {
     });
   }
 
+  void getData() async {
+    var data = await FileManager.tempThumbnail();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +34,11 @@ class _FolderScreenState extends State<FolderScreen> {
         title: const Text("Media Folders"),
         leading: const Icon(Icons.explore),
         actions: [
+          IconButton(
+              onPressed: () {
+                getData();
+              },
+              icon: Icon(Icons.explore)),
           _loadingFiles
               ? Container()
               : IconButton(
