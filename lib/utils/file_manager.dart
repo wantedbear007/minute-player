@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -200,16 +201,6 @@ class FileManager {
     return folderWithQuantity;
   }
 
-//   get video thumbnail
-  static Future<String?> getThumbnail(String videoPath) async {
-    String? _thumbnail = await VideoThumbnail.thumbnailFile(
-        video: videoPath,
-        thumbnailPath: (await getTemporaryDirectory()).path,
-        imageFormat: ImageFormat.JPEG);
-
-    return _thumbnail;
-  }
-
   static Future<List<FileSystemEntity>> tempGetFiles() async {
     List<Directory> storages = await getStoragePaths();
     List<FileSystemEntity> files = [];
@@ -229,6 +220,8 @@ class FileManager {
     return files;
   }
 
+  static List<String> videos = [];
+
   // function Optimus Prime
   static Future<List<Map<String, dynamic>>> getAllFoldersWithFiles() async {
     List<FileSystemEntity> files = await tempGetFiles();
@@ -238,6 +231,8 @@ class FileManager {
         videoFiles.add(file.path.toString());
       }
     }
+
+    videos = videoFiles;
 
     List<Map<String, dynamic>> json = [];
 
@@ -290,4 +285,98 @@ class FileManager {
   //   }
   //   return [];
   //  }
+  //   get video thumbnail
+  static Future<String?> getThumbnail(String videoPath) async {
+    String? _thumbnail = await VideoThumbnail.thumbnailFile(
+        // timeMs: 10,
+        quality: 20,
+        video: videoPath,
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        imageFormat: ImageFormat.JPEG);
+
+    return _thumbnail;
+  }
+
+  static Future<bool> nativeThumbnail(String path) async {
+    final plugin = FcNativeVideoThumbnail();
+    late bool isSuccess = false;
+    String savePath = (await getTemporaryDirectory()).path;
+    try {
+      final thumbnailGenerate = await plugin.getVideoThumbnail(
+          srcFile: path,
+          destFile: savePath,
+          width: 300,
+          height: 300,
+          keepAspectRatio: true,
+          format: 'jpeg',
+          quality: 90);
+
+      isSuccess = thumbnailGenerate;
+    } catch (err) {
+      print(err.toString());
+    }
+
+    return isSuccess;
+  }
+
+//   creating thumbnail
+
+  static tempThumbnail() async {
+    var data = await getTemporaryDirectory();
+
+    // print(data.toString());
+    // print(data.path.toString());
+
+    print("inside function");
+    List<Map<String, String>> thumbnailHash = [];
+
+    for (var x in videos) {
+      Map<String, String> thumbnail = {};
+
+      thumbnail["fileName"] = x;
+      // String? getThumbnail = await FileManager.getThumbnail(x);
+      // Uint8List? getThumbnail = await FileManager.getThumbMemory(x);
+
+      bool native = await FileManager.nativeThumbnail(x);
+      print(native.toString());
+      // thumbnail["cached"] = getThumbnail ?? "null";
+
+      // thumbnailHash.add(thumbnail);
+      // print("file: ${path.basename(x)}");
+
+      print("*" * 100);
+    }
+
+    for (var x in thumbnailHash) {
+      print(x.toString());
+      print("-" * 70);
+    }
+
+    print("operation completed !!!!");
+    print(thumbnailHash.length);
+    print(videos.length);
+    // print("*" * 50);
+  }
+
+// _getData() async {
+//   File file = File(widget.file.path);
+//   int fileSize = await file.length();
+//
+//   // var x = await file.stat();
+//   videoSize = FileManager.formatBytes(fileSize, 2);
+//   String tempPath = widget.file.path;
+//   // /storage/emulated/0/Movies/Whatsapp/VID-20231022-WA0000.mp4
+//   // print(widget.file.path);
+//   thumbnailPath = await FileManager.getThumbnail(tempPath);
+//   // setState(() {
+//   //   _loading = false;
+//   // });
+//
+//   return thumbnailPath;
+// }
+
+
+// favourites
+
+
 }

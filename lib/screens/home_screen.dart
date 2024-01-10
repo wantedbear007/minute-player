@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minute_player/widgets/bottom_navigation.dart'
-    show BottomNavigation, NavigationBars;
+    show NavigationBars;
 import 'package:permission_handler/permission_handler.dart'
     show Permission, PermissionActions, PermissionStatus, openAppSettings;
 

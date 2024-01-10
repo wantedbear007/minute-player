@@ -5,7 +5,6 @@ import 'package:minute_player/utils/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // for MPV player
   MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
