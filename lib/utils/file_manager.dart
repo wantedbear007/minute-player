@@ -337,7 +337,7 @@ class FileManager {
       // String? getThumbnail = await FileManager.getThumbnail(x);
       // Uint8List? getThumbnail = await FileManager.getThumbMemory(x);
 
-      bool native = await FileManager.nativeThumbnail(x);
+      bool native = await nativeThumbnail(x);
       print(native.toString());
       // thumbnail["cached"] = getThumbnail ?? "null";
 
